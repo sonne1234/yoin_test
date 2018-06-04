@@ -28,3 +28,8 @@ framework:
 
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
         #app: cache.adapter.apcu
+lexik_jwt_authentication:
+    private_key_path: '%env(resolve:JWT_PRIVATE_KEY_PATH)%'
+    public_key_path:  '%env(resolve:JWT_PUBLIC_KEY_PATH)%'
+    pass_phrase:      '%env(resolve:JWT_KEY_PASS_PHRASE)%'
+    token_ttl:        '%env(resolve:JWT_TOKEN_TTL)%'
