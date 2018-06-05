@@ -1,33 +1,46 @@
 security:
     encoders:
-        App\Entity\User:
+        App\Entity\Useridentity:
             algorithm: sha512
  
     providers:
         api_user_provider:
             entity:
-                class: App\Entity\User
-                property: username
+                class: App\Entity\Useridentity
+                property: email
  
     firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt|error)|css|images|js)/
+            security: false
+
         login:
-            pattern:  ^/api/login
+            pattern:  ^/api/v1/users/login$
             stateless: true
             anonymous: true
             form_login:
-                check_path:               /api/login_check
-                success_handler:          lexik_jwt_authentication.handler.authentication_success
-                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+                provider: user_by_email_db_provider
+                check_path: /api/v1/users/login
+                username_parameter: email
+                password_parameter: password
+                success_handler: App\Application\Security\AuthSuccessHandler
+                failure_handler: App\Application\Security\AuthFailureHandler
                 require_previous_session: false
- 
-        api:
-            pattern:   ^/api/v1
+
+        external_api:
+            pattern: ^/api/v1/payment_provider
+            provider: in_memory
+            http_basic: ~
+
+        default:
+            provider: user_by_id_db_provider
             stateless: true
-            anonymous: false
-            provider: api_user_provider
-            guard:
-                authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
+            anonymous: true
+            lexik_jwt:
+                authorization_header:
+                    enabled: true
+                    prefix:  Bearer
+                    name:    'X-Authorization'
  
     access_control:
         - { path: ^/api/login_check, roles: IS_AUTHENTICATED_ANONYMOUSLY }

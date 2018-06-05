@@ -18,5 +18,6 @@ class ApiController extends Controller
      */
     public function loginCheckAction() {
     	print_r('hola');
+    	exit();
     }
 }
