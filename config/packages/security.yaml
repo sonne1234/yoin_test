@@ -1,13 +1,21 @@
 security:
     encoders:
-        App\Entity\Useridentity:
-            algorithm: sha512
- 
+        App\Domain\User\UserIdentity:
+            algorithm: "%env(resolve:PASSWORD_ALGORITHM)%"
+            cost: 10
+        Symfony\Component\Security\Core\User\User: plaintext
+
     providers:
-        api_user_provider:
-            entity:
-                class: App\Entity\Useridentity
-                property: email
+        user_by_email_db_provider:
+            id: App\EventListener\UserByEmailDbProvider
+        user_by_id_db_provider:
+            id: App\EventListener\UserByIdDbProvider
+        in_memory:
+            memory:
+                users:
+                    pagamobil_callback:
+                        password: 'pagomobil.callback.password%'
+                        roles: 'ROLE_EXTERNAL'
  
     firewalls:
         dev:
@@ -15,16 +23,16 @@ security:
             security: false
 
         login:
-            pattern:  ^/api/v1/users/login$
+            pattern:  ^/api/login
             stateless: true
             anonymous: true
             form_login:
                 provider: user_by_email_db_provider
-                check_path: /api/v1/users/login
+                check_path: /api/login_check
                 username_parameter: email
                 password_parameter: password
-                success_handler: App\Application\Security\AuthSuccessHandler
-                failure_handler: App\Application\Security\AuthFailureHandler
+                success_handler: App\EventListener\AuthSuccessHandler
+                failure_handler: App\EventListener\AuthFailureHandler
                 require_previous_session: false
 
         external_api:

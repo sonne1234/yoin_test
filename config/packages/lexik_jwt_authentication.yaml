@@ -5,4 +5,4 @@ lexik_jwt_authentication:
     token_ttl:        '%env(JWT_TOKENTTL)%'
     encoder:
         service: lexik_jwt_authentication.encoder.lcobucci
-        signature_algorithm: RS512
+        signature_algorithm: bcrypt
