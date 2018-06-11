@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class ApiController extends Controller
 {
     /**
-     * @Route("/login_check", name="login_check")
+     * @Route("/login_check2", name="login_check")
      */
     public function loginCheckAction() {
     	print_r('hola');
