@@ -22,7 +22,7 @@ abstract class AbstractDoctrineRepository implements DomainRepository
      */
     private $repo;
 
-    public function AbstractDoctrineRepository(EntityManager $em)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
         $this->repo = $em->getRepository($this->repositoryClassName());

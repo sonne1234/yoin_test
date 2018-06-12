@@ -16,9 +16,8 @@ class AuthSuccessHandler implements AuthenticationSuccessHandlerInterface
      */
     private $userSignInService;
 
-    public function AuthSuccessHandler(UserSignInService $userSignInService)
+    public function __construct(UserSignInService $userSignInService)
     {
-        
         $this->userSignInService = $userSignInService;
     }
 

@@ -18,10 +18,9 @@ class UserSignInService
      */
     private $em;
 
-    public function UserSignInService(EntityManager $em, JWTManager $jwtManager)
+    public function __construct(EntityManager $em, JWTManager $jwtManager)
     {
-        print_r($em->getPost($_POST));
-        exit();
+        
         $this->jwtManager = $jwtManager;
         $this->em = $em;
     }

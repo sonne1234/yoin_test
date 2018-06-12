@@ -8,7 +8,7 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
        # autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        public: false       # Allows optimizing the container by removing unused services; this also means
+        public: true       # Allows optimizing the container by removing unused services; this also means
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
 
@@ -32,9 +32,19 @@ services:
 
     App\EventListener\AuthSuccessHandler:
     App\EventListener\AuthFailureHandler:
+    Doctrine\ORM\EntityManager:
+        #public: true
+    Doctrine\ORM\Configuration:
+    Doctrine\Common\EventManager:
+    Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager:
+    App\Service\User\UserSignInService:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    #app.EntityManager:
+    #    class: Doctrine\ORM\EntityManager
+    #    autowire: false 
 
     app.authentication_success_listener:
         class: App\EventListener\AuthSuccessHandler
@@ -54,4 +64,29 @@ services:
             $userRepository: '@App\Infrastructure\Persistence\Doctrine\DoctrineUserRepository'
     App\EventListener\UserByIdDbProvider:
             $userRepository: '@App\Infrastructure\Persistence\Doctrine\DoctrineUserRepository'
+
+    App\Service\Account\CreateAccountAdminHandler:
+            $userRepository: '@App\Infrastructure\Persistence\Doctrine\DoctrineUserRepository'
+            $accountRepository: '@App\Infrastructure\Persistence\Doctrine\DoctrineAccountRepository'
+            $imageRepository: '@App\Infrastructure\Persistence\Doctrine\DoctrineImageRepository'
+            $accountAdminRepository: '@App\Infrastructure\Persistence\Doctrine\DoctrineAccountAdminRepository'
+    App\Domain\Account\Transformer\AccountAdminTransformer:
+    App\Service\User\UserPasswordEncoder:
+    App\Service\Common\GenerateS3FileNameHandler:
+            $s3UploadedFileNamesRepository: '@App\Infrastructure\Persistence\Doctrine\DoctrineS3UploadedFileNameRepository'
+    App\Service\Common\UploadImageHandler:
+            $imageRepository: '@App\Infrastructure\Persistence\Doctrine\DoctrineImageRepository'
+    App\Service\S3Bucket:
+        calls:
+            - method: setS3BucketName
+              arguments:
+                  - 'prod-yoin' #%aws.s3.bucket%
+
+    App\Service\VichUploaderNamer:
+    App\Service\Common\GenerateFileUploadUrlHandler:
+
+    SimpleBus\DoctrineORMBridge\EventListener\CollectsEventsFromEntities:
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+    
     

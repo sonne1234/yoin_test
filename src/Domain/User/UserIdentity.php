@@ -18,7 +18,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity()
  * @ORM\Table(uniqueConstraints={
  *     @ORM\UniqueConstraint(columns={"isprimary", "account_id"}, options={"where": "isprimary=true"}),
  * })
